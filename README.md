@@ -3,7 +3,7 @@
 A free-configuration Key-Value style persistent store implement with CoreData.
 
 
-###Usage
+#### Usage
 
 
 ```swift
