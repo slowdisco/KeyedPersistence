@@ -1,6 +1,7 @@
 
 import CoreData
 
+
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public struct KeyedPersistence {
     
@@ -64,7 +65,7 @@ public struct KeyedPersistence {
         try InMemoryPath(_context.main, pathString)
     }
     
-    nonisolated public func withPathOnMainActor<Result>(_ pathString: String, _ body: @MainActor (any KeyedPath) async throws -> Result) async throws -> Result {
+    public func withPathOnMainActor<Result>(_ pathString: String, _ body: @MainActor (any KeyedPath) async throws -> Result) async throws -> Result {
         let path = try await pathOnMainActor(pathString)
         return try await body(path)
     }
@@ -124,4 +125,6 @@ public struct KeyedPersistence {
     }
     
 }
+
+
 

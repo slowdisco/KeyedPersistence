@@ -320,3 +320,6 @@ extension ManagedPayloadObject {
 typealias MgObj = ManagedObject
 typealias MgPathObj = ManagedPathObject
 typealias MgPlObj<Pl> = ManagedPayloadObject<Pl> where Pl: Storable
+
+
+
