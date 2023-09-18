@@ -10,7 +10,7 @@ A free-configuration Key-Value style persistent store implement with CoreData.
 
 let db = try await KeyedPersistence(location: "a localtion file path", storeType: .sqlite)
 
-try db.withPath("/Library/Books/OfTimeandtheRiver") { book in
+try await db.withPath("/Library/Books/OfTimeandtheRiver") { book in
             try book.putValueOfType(String.self, "Thomas Wolfe", forKey: "Author")
             try book.putValueOfType(Date.self, date, forKey: "PublicationDate")
             try book.putValueOfType(Int16.self, 20, forKey: "ReadingProgress")
@@ -18,7 +18,7 @@ try db.withPath("/Library/Books/OfTimeandtheRiver") { book in
             
         }
 
-try db.withPath("/Schools") { schools in
+try await db.withPath("/Schools") { schools in
             let aSchool = try schools.subpathWithName("BrightSparks")
             let numberOfStudents = try aSchool.valueOfType(Int32.self, forKey: "StudentsCount")
             let allGrades = try someSchool.subpaths()
