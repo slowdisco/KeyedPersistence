@@ -118,10 +118,6 @@ extension NSAttributeType {
         self = .dateAttributeType
     }
     
-    init(_: UUID.Type) {
-        self = .UUIDAttributeType
-    }
-    
 }
 
 enum TypeEncode: String {

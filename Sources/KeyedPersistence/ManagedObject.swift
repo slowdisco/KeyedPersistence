@@ -3,7 +3,11 @@ import CoreData
 import ObjectiveC
 
 
-public typealias ObjectId = UUID
+public typealias ObjectId = String
+
+private func newObjectId() -> ObjectId {
+    UUID().uuidString
+}
 
 @propertyWrapper struct ManagedProperty<Wrapped> where Wrapped: ExpressibleByNilLiteral {
         
@@ -155,14 +159,14 @@ final class ManagedPathObject: NSManagedObject, ManagedObject, PathData {
         entity.properties.append({
             let attr = NSAttributeDescription()
             attr.name = StoreKeys.storeId.stringValue
-            attr.attributeType = .UUIDAttributeType
+            attr.attributeType = .stringAttributeType
             attr.isOptional = false
             return attr
         }())
         entity.properties.append({
             let attr = NSAttributeDescription()
             attr.name = StoreKeys.path.stringValue
-            attr.attributeType = .UUIDAttributeType
+            attr.attributeType = .stringAttributeType
             attr.isOptional = false
             return attr
         }())
@@ -176,7 +180,7 @@ final class ManagedPathObject: NSManagedObject, ManagedObject, PathData {
         return entity
     }
     
-    @nonobjc static let rootPath: ObjectId = UUID(uuidString: "B71DDD47-9EA7-406C-904B-31FAD8B18588")!
+    @nonobjc static let rootPath: ObjectId = "B71DDD47-9EA7-406C-904B-31FAD8B18588"
     
 }
 
@@ -194,14 +198,14 @@ extension ManagedPathObject {
     
     class func newObject(path: ObjectId, name: String, ctx: NSManagedObjectContext) -> Self {
         let obj = Self.init(entity: Self.entity(), insertInto: ctx)
-        obj.storeId = ObjectId()
+        obj.storeId = newObjectId()
         obj.path = path
         obj.name = name
         return obj
     }
     
     class func newObjectForBatPut(path: ObjectId, name: String) -> [String : Any] {
-        [StoreKeys.storeId.rawValue: ObjectId(),
+        [StoreKeys.storeId.rawValue: newObjectId(),
          StoreKeys.path.rawValue: path,
          StoreKeys.name.rawValue: name
         ]
@@ -248,7 +252,7 @@ final class ManagedPayloadObject<Pl>: NSManagedObject, ManagedObject, PayloadDat
         entity.properties.append({
             let attr = NSAttributeDescription()
             attr.name = StoreKeys.path.stringValue
-            attr.attributeType = .UUIDAttributeType
+            attr.attributeType = .stringAttributeType
             attr.isOptional = false
             return attr
         }())

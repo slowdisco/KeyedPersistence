@@ -7,7 +7,7 @@ import SwiftUI
 // MARK: - EnvironmentValues
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-struct KeyedPersistenceKey: EnvironmentKey {
+private struct KeyedPersistenceKey: EnvironmentKey {
     
     typealias Value = KeyedPersistence?
     
@@ -18,7 +18,7 @@ struct KeyedPersistenceKey: EnvironmentKey {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-extension EnvironmentValues {
+public extension EnvironmentValues {
     
     var keyedPersistence: KeyedPersistence? {
         get {
@@ -51,12 +51,21 @@ extension EnvironmentValues {
 ///
 /// If fails, `wrappedValue` property will keep remaining nil.
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-@propertyWrapper @MainActor struct KeyedPathDeclare {
+@propertyWrapper @MainActor public struct KeyedPathDeclare {
     
     @Environment(\.keyedPersistence)
     private var _db
     private let _pathString: String
-    var wrappedValue: (any KeyedPath)? = nil
+    private var _wrappedValue: (any KeyedPath)? = nil
+    
+    public var wrappedValue: (any KeyedPath)? {
+        get {
+            _wrappedValue
+        }
+        set {
+            _wrappedValue = newValue
+        }
+    }
     
     init(pathString: String) {
         _pathString = pathString
@@ -78,7 +87,7 @@ extension EnvironmentValues {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 extension KeyedPathDeclare: DynamicProperty {
     
-    mutating func update() {
+    mutating public func update() {
         if wrappedValue == nil {
             getPath()
         }
