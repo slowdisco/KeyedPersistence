@@ -422,7 +422,8 @@ struct Select<Upstream>: DownstreamDbWork where Upstream: DbWork {
     
     func perform(_ input: Input) throws -> Output {
         _ = try up.perform(input)
-        let selReq = Obj.fetchRequest()//NSFetchRequest<Obj>(entityName: entityName)
+        let selReq = NSFetchRequest<Obj>()
+        selReq.entity = Obj.entity()
         selReq.predicate = filter
         selReq.sortDescriptors = sortDescriptors
         selReq.fetchLimit = _limit
@@ -430,7 +431,8 @@ struct Select<Upstream>: DownstreamDbWork where Upstream: DbWork {
         ///
         /// When you execute a fetch, by default returnsObjectsAsFaults is true; Core Data fetches the object data for the matching records, fills the row cache with the information, and returns managed object as faults. These faults are managed objects, but all of their property data resides in the row cache until the fault is fired. When the fault is fired, Core Data retrieves the data from the row cache. Although the overhead for this operation is small, for large datasets it may not be trivial. If you need to access the property values from the returned objects (for example, if you iterate over all the objects to calculate the average value of a particular attribute), then it is more efficient to set returnsObjectsAsFaults to false to avoid the additional overhead.
         selReq.returnsObjectsAsFaults = _allowFaultsObj
-        return (try ctx.fetch(selReq)) as! [Obj]
+        selReq.includesPropertyValues = !_allowFaultsObj
+        return try ctx.fetch(selReq)
     }
     
 }
@@ -514,7 +516,7 @@ struct BatchInsert<Upstream>: DownstreamDbWork where Upstream: DbWork {
         if _objects.isEmpty {
             return
         }
-        let batReq = NSBatchInsertRequest(entityName: Obj.entity().name!, objects: _objects)
+        let batReq = NSBatchInsertRequest(entity: Obj.entity(), objects: _objects)
         batReq.resultType = .objectIDs
         let result = try ctx.execute(batReq) as? NSBatchInsertResult
         if !_mergeObjects {
@@ -553,7 +555,7 @@ struct BatchUpdate<Upstream>: DownstreamDbWork where Upstream: DbWork {
     
     func perform(_ input: Input) throws -> Output {
         _ = try up.perform(input)
-        let batReq = NSBatchUpdateRequest(entityName: Obj.entity().name!)
+        let batReq = NSBatchUpdateRequest(entity: Obj.entity())
         batReq.predicate = filter
         /// The dictionary keys are either NSPropertyDescription objects or strings that identify the property name.
         /// The dictionary values are either a constant value or an NSExpression that evaluates to a scalar value.

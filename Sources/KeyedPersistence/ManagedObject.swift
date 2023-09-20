@@ -147,7 +147,7 @@ final class ManagedPathObject: NSManagedObject, ManagedObject, PathData {
     }
     
     @nonobjc class var managedObjectEntityName: String {
-        "KeyedPersistencePATH"
+        "KEYEDPERSISTENCEPATH"
     }
     
     /// `NSManagedObject.entity()` can not retrieve a entity that has not yet been loaded by a `NSManagedObjectModel`.
@@ -177,6 +177,12 @@ final class ManagedPathObject: NSManagedObject, ManagedObject, PathData {
             attr.isOptional = false
             return attr
         }())
+        entity.indexes = [
+            NSFetchIndexDescription(name: "NonrTreeIndex", elements: [
+                NSFetchIndexElementDescription(property: entity.properties[1], collationType: .binary),
+                NSFetchIndexElementDescription(property: entity.properties[2], collationType: .binary)
+            ])
+        ]
         return entity
     }
     
@@ -241,7 +247,7 @@ final class ManagedPayloadObject<Pl>: NSManagedObject, ManagedObject, PayloadDat
     }
     
     class var managedObjectEntityName: String {
-        "KeyedPersistencePayload\(Pl.attributeType.rawValue)"
+        "KEYEDPERSISTENCEPAYLOAD\(Pl.attributeType.rawValue)"
     }
     
     class var managedObjectEntity: NSEntityDescription {
@@ -270,6 +276,12 @@ final class ManagedPayloadObject<Pl>: NSManagedObject, ManagedObject, PayloadDat
             attr.isOptional = false
             return attr
         }())
+        entity.indexes = [
+            NSFetchIndexDescription(name: "NonrTreeIndex", elements: [
+                NSFetchIndexElementDescription(property: entity.properties[0], collationType: .binary),
+                NSFetchIndexElementDescription(property: entity.properties[1], collationType: .binary)
+            ])
+        ]
         return entity
     }
     
